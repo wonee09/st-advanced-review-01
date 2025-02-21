@@ -1,27 +1,21 @@
 {
   "todos": [
     {
-      "id": "114d",
-      "title": "asdfasd",
-      "contents": "asdgfasgdf",
+      "id": 1,
+      "title": "리액트 공부하기",
+      "contents": "리액트 기초를 공부해보자",
       "isDone": false
     },
     {
-      "id": "06df",
-      "title": "점심먹기",
-      "contents": "맛있는거",
+      "id": "5fdd",
+      "title": "갈비먹기",
+      "contents": "집에서",
       "isDone": false
     },
     {
-      "id": "c667",
-      "title": "점심먹기",
-      "contents": "맛있는거",
-      "isDone": false
-    },
-    {
-      "id": "0b41",
+      "id": "1078",
       "title": "asdfasdf",
-      "contents": "asdfgadfgadfga",
+      "contents": "asdfasdf",
       "isDone": false
     }
   ]

@@ -1,13 +1,23 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { createTodo } from "../redux/slices/todoSlice.js";
-import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addTodo } from "../services";
+import { QUERY_KEYS } from "../contansts/queryKeys";
 
 export default function TodoForm() {
+  // const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
+
   const [title, setTitle] = useState("");
   const [contents, setContents] = useState("");
-  const dispatch = useDispatch();
+
+  const addMutation = useMutation({
+    mutationFn: addTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.TODOS],
+      });
+    },
+  });
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -16,24 +26,12 @@ export default function TodoForm() {
       alert("내용이나 제목을 입력해주세요.");
     }
 
-    //
-    const { data } = await axios.post("http://localhost:4000/todos", {
+    // 실제 DB 입력 처리
+    addMutation.mutate({
       title,
       contents,
       isDone: false,
     });
-
-    // console.log("response => ", response);
-
-    dispatch(createTodo(data));
-    // dispatch(
-    //   createTodo({
-    //     id: data.id,
-    //     title,
-    //     contents,
-    //     isDone: false,
-    //   })
-    // );
   };
 
   return (

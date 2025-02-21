@@ -1,15 +1,20 @@
-import { useEffect, useState } from "react";
 import TodoItem from "./TodoItem";
-import axios from "axios";
+import { useTodos } from "../hooks/queries";
 
 export default function TodoList({ isDone }) {
-  const [todoList, setTodoList] = useState([]);
-  const initData = async () => {
-    const response = await axios.get("http://localhost:4000/todos");
-    console.log("response => ", response);
-    setTodoList(response.data);
-  };
-  initData();
+  const {
+    data: todoList,
+    isPending: isTodoListPending,
+    isError: isTodoListError,
+  } = useTodos();
+
+  if (isTodoListPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (isTodoListError) {
+    return <div>Error...</div>;
+  }
 
   return (
     <section>
@@ -20,6 +25,7 @@ export default function TodoList({ isDone }) {
           .map((todo) => (
             <TodoItem key={todo.id} todo={todo} />
           ))}
+        ``
       </ul>
     </section>
   );
