@@ -1,21 +1,20 @@
-import { useSelector } from "react-redux";
-import {
-  BrowserRouter,
-  Navigate,
-  Outlet,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import Login from "../pages/Login";
 import Main from "../pages/Main";
 
 const PublicRoute = () => {
-  const isLogin = useSelector((state) => state.auth.isLogin);
-  return <>{isLogin ? <Navigate to="/" /> : <Outlet />}</>;
+  return (
+    <>
+      <Outlet />
+    </>
+  );
 };
 const PrivateRoute = () => {
-  const isLogin = useSelector((state) => state.auth.isLogin);
-  return <>{isLogin ? <Outlet /> : <Navigate to="/login" />}</>;
+  return (
+    <>
+      <Outlet />
+    </>
+  );
 };
 
 export default function Router() {

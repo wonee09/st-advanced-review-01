@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { authApi } from "../api/axios";
 import useForm from "../hooks/useForm";
-import { login } from "../redux/slices/authSlice";
 
 export default function Login() {
-  const dispatch = useDispatch();
   const [isLoginMode, setIsLoginMode] = useState(true);
 
+  // 폼 상태 관리
+  // formState: 폼 상태
+  // onChangeHandler: 폼 상태 변경 핸들러
+  // resetForm: 폼 상태 초기화 핸들러
   const { formState, onChangeHandler, resetForm } = useForm({
     id: "",
     password: "",
@@ -19,37 +19,9 @@ export default function Login() {
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     if (isLoginMode) {
-      try {
-        const { data } = await authApi.post("/login", {
-          id,
-          password,
-        });
-        const { accessToken, avatar, nickname, userId } = data;
-        if (data.success) {
-          alert("로그인 성공");
-          localStorage.setItem("accessToken", accessToken);
-          dispatch(login());
-        }
-      } catch (err) {
-        alert(err?.response?.data?.message);
-        console.error(err);
-      }
+      // 로그인 처리
     } else {
       // 회원가입 처리
-      try {
-        const { data } = await authApi.post("/register", {
-          id,
-          password,
-          nickname,
-        });
-        if (data.success) {
-          setIsLoginMode(true);
-          resetForm();
-          alert("회원가입 성공");
-        }
-      } catch (err) {
-        alert(err.response.data.message);
-      }
     }
   };
 
