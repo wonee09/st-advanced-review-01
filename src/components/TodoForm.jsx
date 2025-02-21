@@ -2,27 +2,38 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createTodo } from "../redux/slices/todoSlice.js";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 export default function TodoForm() {
   const [title, setTitle] = useState("");
   const [contents, setContents] = useState("");
   const dispatch = useDispatch();
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     if (!title && !contents) {
       alert("내용이나 제목을 입력해주세요.");
     }
 
-    dispatch(
-      createTodo({
-        id: uuidv4(),
-        title,
-        contents,
-        isDone: false,
-      })
-    );
+    //
+    const { data } = await axios.post("http://localhost:4000/todos", {
+      title,
+      contents,
+      isDone: false,
+    });
+
+    // console.log("response => ", response);
+
+    dispatch(createTodo(data));
+    // dispatch(
+    //   createTodo({
+    //     id: data.id,
+    //     title,
+    //     contents,
+    //     isDone: false,
+    //   })
+    // );
   };
 
   return (
