@@ -2,13 +2,16 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addTodo } from "../services";
 import { QUERY_KEYS } from "../contansts/queryKeys";
+import { useSelector } from "react-redux";
 
 export default function TodoForm() {
-  // const queryClient = new QueryClient();
   const queryClient = useQueryClient();
 
   const [title, setTitle] = useState("");
   const [contents, setContents] = useState("");
+
+  const user = useSelector((state) => state.auth.user);
+  console.log("user => ", user);
 
   const addMutation = useMutation({
     mutationFn: addTodo,
@@ -30,6 +33,7 @@ export default function TodoForm() {
     addMutation.mutate({
       title,
       contents,
+      writerId: user.userId,
       isDone: false,
     });
   };

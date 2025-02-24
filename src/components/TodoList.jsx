@@ -1,12 +1,17 @@
 import TodoItem from "./TodoItem";
-import { useTodos } from "../hooks/queries";
+import { useQuery } from "@tanstack/react-query";
+import { QUERY_KEYS } from "../contansts/queryKeys";
+import { getTodos } from "../services";
 
 export default function TodoList({ isDone }) {
   const {
     data: todoList,
     isPending: isTodoListPending,
     isError: isTodoListError,
-  } = useTodos();
+  } = useQuery({
+    queryKey: [QUERY_KEYS.TODOS],
+    queryFn: getTodos,
+  });
 
   if (isTodoListPending) {
     return <div>Loading...</div>;
@@ -25,7 +30,6 @@ export default function TodoList({ isDone }) {
           .map((todo) => (
             <TodoItem key={todo.id} todo={todo} />
           ))}
-        ``
       </ul>
     </section>
   );

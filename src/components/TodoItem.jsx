@@ -1,20 +1,29 @@
-// import { useDispatch } from "react-redux";
-// import { deleteTodo, updateIsDone } from "../redux/slices/todoSlice.js";
-import { jsonApi } from "../api/axios.js";
-
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "../contansts/queryKeys.js";
+import { deleteTodo, updateIsDone } from "../services/index.js";
+import { useSelector } from "react-redux";
 export default function TodoItem({ todo }) {
-  const onUpdateIsDone = async (a, todoId) => {
-    await jsonApi.patch(`/todos/${todoId}`, {
-      isDone: !a.isDone,
-    });
-    // dispatch(updateIsDone(todoId));
-  };
+  const queryClient = useQueryClient();
 
-  const onDeleteTodo = async (todoId) => {
-    await jsonApi.delete(`/todos/${todoId}`);
-    // dispatch(deleteTodo(todoId));
-  };
+  const user = useSelector((state) => state.auth.user);
 
+  const updateIsDoneMutation = useMutation({
+    mutationFn: updateIsDone,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.TODOS],
+      });
+    },
+  });
+
+  const deleteTodoMutation = useMutation({
+    mutationFn: deleteTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.TODOS],
+      });
+    },
+  });
   return (
     <li
       style={{
@@ -30,12 +39,16 @@ export default function TodoItem({ todo }) {
         <p>제목: {todo.title}</p>
         <p>내용: {todo.contents}</p>
       </section>
-      <section>
-        <button onClick={() => onUpdateIsDone(todo, todo.id)}>
-          {todo.isDone ? "취소" : "완료"}
-        </button>
-        <button onClick={() => onDeleteTodo(todo.id)}>삭제</button>
-      </section>
+      {user.userId === todo.writerId && (
+        <section>
+          <button onClick={() => updateIsDoneMutation.mutate(todo)}>
+            {todo.isDone ? "취소" : "완료"}
+          </button>
+          <button onClick={() => deleteTodoMutation.mutate(todo.id)}>
+            삭제
+          </button>
+        </section>
+      )}
     </li>
   );
 }

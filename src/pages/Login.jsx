@@ -1,16 +1,15 @@
 import { useState } from "react";
 import styled from "styled-components";
 import useForm from "../hooks/useForm";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// import { login } from "../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/slices/authSlice";
 import { authApi } from "../api/axios";
 
 export default function Login() {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   // 폼 상태 관리
   // formState: 폼 상태
@@ -23,27 +22,24 @@ export default function Login() {
   });
   const { id, password, nickname } = formState;
 
-  console.log("formState => ", formState);
-
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     if (isLoginMode) {
       // 로그인 처리
-      // const { data } = await axios.post(
       const { data } = await authApi.post("/login", {
         id: formState.id,
         password: formState.password,
       });
 
-      console.log("response => ", data.accessToken);
+      console.log("response => ", data);
 
       alert("로그인이 완료되었습니다.");
       localStorage.setItem("accessToken", data.accessToken);
-      // dispatch(login());
+      dispatch(login(data));
       navigate("/");
     } else {
       // 회원가입 처리
-      await axios.post("https://www.nbcamp-react-auth.link/register", {
+      await authApi.post("/register", {
         id: formState.id,
         password: formState.password,
         nickname: formState.nickname,
